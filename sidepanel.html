@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sidebar Arcade</title>
+    <link rel="icon" href="icons/icon32.png" />
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- ================= SIDEBAR (tab game, vertikal) ================= -->
+      <aside class="sidebar" id="sidebar">
+        <header class="brand">
+          <div class="brand-top">
+            <div class="brand-mark" aria-hidden="true">
+              <span class="pix"></span>
+            </div>
+            <button class="icon-btn" id="soundBtn" title="Suara: nyala" aria-label="Toggle suara">🔊</button>
+          </div>
+          <div class="brand-text">
+            <strong>Sidebar Arcade</strong>
+            <span class="brand-sub">15 game · offline</span>
+          </div>
+        </header>
+
+        <div class="search-wrap">
+          <input id="search" type="search" placeholder="Cari game…" autocomplete="off" spellcheck="false" />
+        </div>
+
+        <nav class="tabs" id="tabs" aria-label="Daftar game"></nav>
+
+        <footer class="side-foot">
+          <button class="ghost-btn" id="randomBtn" title="Pilih game acak">🎲 Acak</button>
+          <a class="ghost-btn" href="https://github.com/aisac-id/sidebar-arcade" target="_blank" rel="noreferrer">★ GitHub</a>
+        </footer>
+      </aside>
+
+      <!-- ================= AREA GAME ================= -->
+      <main class="main" id="main">
+        <div class="empty">
+          <div class="empty-inner">
+            <div class="empty-emoji">👾</div>
+            <h1>Pilih game di sidebar</h1>
+            <p>Semua game jalan offline, skor terbaik otomatis disimpan di browser kamu.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
