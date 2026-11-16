@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Sidebar Arcade — 115 Game",
   "short_name": "Sidebar Arcade",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "115 game mini (arcade, shooter, pesawat, racing, puzzle, kartu, dingdong/slot, refleks, olahraga) yang langsung dimainkan di Chrome Side Panel. Ringan, offline, tanpa iklan.",
   "minimum_chrome_version": "116",
   "permissions": [

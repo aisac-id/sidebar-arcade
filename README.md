@@ -20,13 +20,16 @@ Nunggu proses panjang itu membosankan. Daripada buka tab game yang penuh iklan, 
 ## Fitur
 
 - **Side panel, bukan popup** — panel tetap terbuka sambil kamu kerja di tab lain.
+- **Mode layar besar / fullscreen** — tombol ↗ membuka game yang sama di tab baru dengan tata letak kabinet arcade, lalu ▣ (atau tekan `F`) untuk fullscreen.
 - **Tab game vertikal** di sidebar, dikelompokkan: Arcade, Shooter, Racing, Puzzle, Word, Board, Luck, Reflex, Skill.
 - **115 game langsung bisa dipilih** — nggak ada halaman loading, nggak ada redirect.
+- **Mekanik per genre**: nitro + bonus nyaris kena di game balap, dash penghancur rintangan di runner, bola ganda & combo di brick, fase murka boss + shield/bomb di shooter.
 - **Ada pesawat-pesawatan**: Space Ace, Sky Fighter, Galaxy Run, Asteroid Storm, Boss Rush, Drone Swarm, UFO Invasion, Neon Shooter, Helicopter Strike, Air Patrol, Missile Command, Space Fortress, Plane Dodger, Jetpack Run, Cave Flyer, Helicopter Cave.
 - **Dingdong & kartu**: Slot Machine, Fruit Slot, Lucky Seven, Roulette, Plinko, Spin Wheel, Keno, Scratch Card, Bingo, Blackjack, Video Poker, Yahtzee, Farkle.
 - **Skor terbaik disimpan** per game (`chrome.storage.local`), ada juga trophy kecil di tab.
 - **Suara 8-bit** (bisa dimatikan), toggle tersimpan.
 - **Keyboard + sentuh** — panah/WASD, tap, swipe, drag, dan tombol pad di bawah canvas.
+- **Rasa "AAA"** — partikel, screen shake, flash, hitstop, combo multiplier, slow-mo saat kena, dan transisi overlay. Semua jalan di canvas 2D tanpa dependency.
 - **Pencarian game** + tombol 🎲 Acak.
 - **100% offline**, nol request jaringan, nol tracking.
 - **Vanilla JS** tanpa build step. Clone → load unpacked → jalan.
@@ -98,10 +101,20 @@ Simon, Whack-a-Mole, Reaction, Aim Trainer, Bubble Pop, Tap Frenzy, UFO Hunt, Mo
 
 Basketball, Mini Golf, Darts, Archery, Air Hockey, Bowling, Cannon Shot, Stack Tower, Fruit Slice, Pinball Lite.
 
+### Mode layar besar
+
+Klik **↗** di header panel (atau tekan `F`) untuk membuka game yang sedang aktif di tab baru. Di sana sidebar jadi drawer (tombol ☰ / `Esc`), game tampil sebagai kabinet arcade dengan panel skor live di kiri-kanan, dan **▣ / F** masuk ke fullscreen browser.
+
+![Mode layar besar](docs/preview-big.png)
+
 <table>
   <tr>
     <td><img src="docs/preview-2048.png" alt="2048" width="320"></td>
     <td><img src="docs/preview-snake.png" alt="Snake" width="320"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/preview-blackjack.png" alt="Blackjack" width="360"></td>
+    <td><img src="docs/preview-big.png" alt="Mode layar besar" width="360"></td>
   </tr>
 </table>
 
@@ -126,7 +139,8 @@ Tip: klik kanan ikon extension → **Open side panel** juga bisa. Mau selalu di 
 
 ## Cara pakai
 
-- **Pilih game** di daftar kiri (vertikal, dikelompokkan per kategori).
+- **Pilih game** di daftar kiri (vertikal, dikelompokkan per kategori). Di mode layar besar, daftar ada di balik tombol ☰.
+- Di mode layar besar: `F` = fullscreen, `Esc` = tutup daftar game.
 - **Cari** dengan kotak "Cari game…", atau tekan **🎲 Acak** kalau bingung.
 - Skor terbaik tiap game muncul di chip **BEST** dan di bawah nama game pada tab.
 - **🔊** untuk mute/unmute. Game terakhir yang dibuka otomatis kebuka lagi saat panel dibuka.

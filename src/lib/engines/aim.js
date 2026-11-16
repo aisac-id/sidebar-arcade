@@ -251,6 +251,7 @@ export function createAimGame(ctx, cfg = {}) {
         score = Math.max(0, score - shotsPenalty);
         st.setScore(score);
       }
+      st.ring(p.x, p.y, { color: "#64748b", r: 18, width: 1.4, life: 0.22 });
       sfx("tick");
       return;
     }
@@ -260,6 +261,8 @@ export function createAimGame(ctx, cfg = {}) {
       st.setScore(score);
       addParts(hit.x, hit.y, "#fb7185", 14);
       floats.push({ x: hit.x, y: hit.y, text: "−15", color: "#fb7185", life: 0.8 });
+      st.burst(hit.x, hit.y, { n: 12, color: "#fb7185", speed: 180, size: 2.6 });
+      st.shake(5, 150);
       sfx("hit");
       return;
     }
@@ -273,6 +276,15 @@ export function createAimGame(ctx, cfg = {}) {
     st.setScore(score);
     addParts(hit.x, hit.y, hit.color, 12);
     floats.push({ x: hit.x, y: hit.y, text: `+${gain}`, color: "#a3e635", life: 0.8 });
+    st.burst(hit.x, hit.y, { n: 14, color: hit.color, speed: 210, size: 2.6, life: 0.5 });
+    st.ring(hit.x, hit.y, { color: hit.color, r: hit.r + 16, width: 2, life: 0.3 });
+    if (bonus) st.pop(hit.x, hit.y - hit.r - 4, "PERFECT", { color: "#ffd166", size: 9 });
+    else if (combo >= 5) st.pop(hit.x, hit.y - hit.r - 4, `x${combo}`, { color: "#a3e635", size: 9 });
+    if (combo > 0 && combo % 10 === 0) {
+      st.flash("rgba(163,230,53,0.16)", 160);
+      st.shake(4, 140);
+      st.pop(hit.x, hit.y - 20, "ON FIRE!", { color: "#a3e635", size: 12 });
+    }
     sfx("point");
   });
 
@@ -287,6 +299,7 @@ export function createAimGame(ctx, cfg = {}) {
       const bonus = Math.round(acc * 0.6);
       score += bonus;
       st.setScore(score);
+      st.flash("rgba(255,220,120,0.25)", 260);
       st.end({
         score,
         title: "Waktu habis!",

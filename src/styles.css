@@ -65,6 +65,8 @@ button {
 
 /* ---------------------------------- layout -------------------------------- */
 .app {
+  position: relative;
+  z-index: 1;
   display: flex;
   height: 100vh;
   height: 100dvh;
@@ -95,13 +97,14 @@ button {
 .brand-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  justify-content: flex-start;
+  gap: 7px;
+  min-width: 0;
 }
 
 .brand-mark {
-  width: 26px;
-  height: 26px;
+  width: 23px;
+  height: 23px;
   flex: 0 0 auto;
   border-radius: 8px;
   background: linear-gradient(140deg, var(--cyan), var(--violet) 60%, var(--pink));
@@ -120,11 +123,14 @@ button {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  flex: 1;
 }
 .brand-text strong {
-  font-size: 11.5px;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+  font-size: 10.5px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 .brand-sub {
   font-size: 9.5px;
@@ -923,10 +929,13 @@ button {
   color: #dc2626;
 }
 .pcard.back {
-  background: linear-gradient(135deg, #1e3a8a, #0f172a);
+  background:
+    repeating-linear-gradient(45deg, rgba(147, 197, 253, 0.12) 0 4px, transparent 4px 8px),
+    linear-gradient(135deg, #1e3a8a, #0f172a);
   color: #93c5fd;
   border-color: #334155;
   font-size: 22px;
+  box-shadow: inset 0 0 0 2px rgba(147, 197, 253, 0.25), 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 .pcard.empty {
   background: transparent;
@@ -2309,4 +2318,646 @@ button {
     height: 62px;
     font-size: 29px;
   }
+}
+
+/* ==========================================================================
+   v2 — juice layer + mode layar besar (buka di tab / fullscreen)
+   ========================================================================== */
+
+/* partikel & flash di atas canvas game */
+.stage {
+  will-change: transform;
+  isolation: isolate;
+}
+.fx-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.fx-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 3;
+  mix-blend-mode: screen;
+  transition: opacity 0.06s linear;
+}
+.fx-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0.3;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+  border-radius: inherit;
+}
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.55), inset 0 0 120px rgba(78, 225, 255, 0.06);
+}
+
+/* aurora halus di belakang panel */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(45% 40% at 20% 20%, rgba(78, 225, 255, 0.16), transparent 60%),
+    radial-gradient(40% 45% at 85% 15%, rgba(167, 139, 250, 0.18), transparent 60%),
+    radial-gradient(50% 40% at 60% 95%, rgba(255, 107, 214, 0.12), transparent 60%);
+  animation: aurora 18s ease-in-out infinite alternate;
+}
+@keyframes aurora {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, 2%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-1%, 1%, 0) scale(1.02);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+}
+
+/* ------------------------------ header actions ---------------------------- */
+.brand-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.brand-actions .icon-btn {
+  flex: 1 1 0;
+  width: auto;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  padding: 0;
+}
+.icon-btn.on {
+  border-color: rgba(78, 225, 255, 0.55);
+  background: rgba(78, 225, 255, 0.16);
+  color: var(--cyan);
+}
+.icon-btn[hidden] {
+  display: none;
+}
+
+/* --------------------------------- big mode -------------------------------- */
+.big-toggle {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 60;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--line-2);
+  background: rgba(12, 18, 32, 0.86);
+  backdrop-filter: blur(8px);
+  font-size: 17px;
+  display: none;
+  place-items: center;
+  box-shadow: var(--shadow);
+}
+body.big .big-toggle {
+  display: grid;
+}
+
+body.big {
+  overflow: hidden;
+}
+body.big .sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 250px;
+  z-index: 55;
+  transform: translateX(-104%);
+  transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+  box-shadow: 30px 0 70px rgba(0, 0, 0, 0.55);
+  padding-top: 12px;
+}
+body.big.nav-open .sidebar {
+  transform: translateX(0);
+}
+body.big .nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: none;
+  background: rgba(4, 7, 14, 0.55);
+  backdrop-filter: blur(2px);
+}
+body.big.nav-open .nav-scrim {
+  display: block;
+}
+body.big .main {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(60% 55% at 50% 0%, rgba(78, 225, 255, 0.1), transparent 65%),
+    radial-gradient(50% 50% at 80% 100%, rgba(167, 139, 250, 0.12), transparent 60%);
+}
+body.big .game-screen {
+  width: min(1180px, 100%);
+  max-height: 100dvh;
+  padding: 16px clamp(14px, 3vw, 40px) 20px;
+  gap: 12px;
+  margin: 0 auto;
+}
+body.big .game-head {
+  align-items: center;
+  gap: 16px;
+}
+body.big .game-title {
+  font-size: clamp(17px, 2.1vw, 26px);
+  letter-spacing: -0.02em;
+}
+body.big .game-sub {
+  font-size: clamp(11px, 1.05vw, 13.5px);
+}
+body.big .chips {
+  gap: 8px;
+}
+body.big .chip {
+  min-width: 78px;
+  padding: 6px 12px;
+  border-radius: 11px;
+  background: rgba(16, 26, 46, 0.7);
+  backdrop-filter: blur(6px);
+}
+body.big .chip i {
+  font-size: 9px;
+}
+body.big .chip b {
+  font-size: clamp(14px, 1.5vw, 20px);
+}
+body.big .screen-body {
+  flex: 1;
+  min-height: 0;
+  justify-content: center;
+  overflow: hidden;
+}
+body.big .stage {
+  width: min(calc(100dvh - 170px) * var(--ar, 0.8), 94vw, 720px);
+  border-radius: 20px;
+  border-color: rgba(120, 170, 255, 0.32);
+  box-shadow:
+    0 0 0 1px rgba(78, 225, 255, 0.1),
+    0 0 46px rgba(78, 225, 255, 0.16),
+    0 30px 80px rgba(0, 0, 0, 0.6);
+}
+body.big .pad {
+  max-width: 560px;
+  margin: 0 auto;
+  width: 100%;
+}
+body.big .pad-btn {
+  min-height: 42px;
+  font-size: 17px;
+}
+body.big .overlay {
+  border-radius: 20px;
+}
+body.big .overlay-card {
+  max-width: 360px;
+  padding: 26px 22px;
+  gap: 12px;
+}
+body.big .overlay-card strong {
+  font-size: 24px;
+}
+body.big .overlay-card p {
+  font-size: 14px;
+}
+body.big .overlay-card .btn {
+  font-size: 15px;
+  padding: 10px 22px;
+}
+
+/* DOM games (papan, kartu, slot) ikut membesar di mode layar besar */
+body.big .pad-wrap,
+body.big .puz-wrap,
+body.big .board8,
+body.big .board4,
+body.big .board-gomoku,
+body.big .casino,
+body.big .mem-grid,
+body.big .ttt4 {
+  max-width: min(660px, 92vw);
+  margin: 0 auto;
+  font-size: clamp(12px, 1.15vw, 15px);
+}
+body.big .pad-wrap {
+  gap: 12px;
+}
+body.big .pcard {
+  width: 46px;
+  height: 66px;
+  font-size: 15px;
+}
+body.big .die {
+  width: 40px;
+  height: 40px;
+  font-size: 26px;
+}
+body.big .slot-reel,
+body.big .reel {
+  font-size: 34px;
+}
+body.big .casino .btn,
+body.big .puz-pad .np-btn {
+  font-size: 14px;
+  padding: 9px 12px;
+}
+body.big .board8 {
+  width: min(560px, 88vw);
+  max-width: 560px;
+}
+body.big .sq8 {
+  font-size: clamp(15px, 2.1vw, 24px);
+}
+body.big .board8 .sq8 .piece {
+  font-size: clamp(17px, 2.4vw, 28px);
+}
+
+/* bilah atas saat fullscreen: geser agar tidak ketimpa tombol nav */
+body.big .game-head {
+  padding-left: 46px;
+}
+@media (max-width: 720px) {
+  body.big .game-screen {
+    padding: 12px 10px 14px;
+  }
+  body.big .stage {
+    width: min(calc(100dvh - 150px) * var(--ar, 0.8), 96vw);
+  }
+  body.big .game-head {
+    padding-left: 0;
+  }
+  body.big .big-toggle {
+    top: 6px;
+    left: 6px;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* --------------------------------- arcade rail ------------------------------ */
+.arcade-rail {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 236px;
+  z-index: 20;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(16, 26, 46, 0.72), rgba(9, 14, 24, 0.88));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+body.big .arcade-rail {
+  display: flex;
+}
+.arcade-rail.left {
+  left: 26px;
+}
+.arcade-rail.right {
+  right: 26px;
+}
+@media (max-width: 1120px) {
+  body.big .arcade-rail {
+    display: none;
+  }
+}
+.rail-kicker {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--dim);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.rail-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+.rail-desc {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.5;
+  margin: 0;
+}
+.rail-stat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 11px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+}
+.rail-stat i {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  font-weight: 700;
+}
+.rail-stat b {
+  font-family: var(--mono);
+  font-size: 19px;
+  color: var(--cyan);
+  font-variant-numeric: tabular-nums;
+}
+.rail-stat.alt b {
+  color: var(--amber);
+}
+.rail-actions {
+  display: grid;
+  gap: 6px;
+  margin-top: 2px;
+}
+.rail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  font-weight: 650;
+  text-align: left;
+}
+.rail-btn:hover {
+  border-color: rgba(78, 225, 255, 0.45);
+  background: rgba(78, 225, 255, 0.1);
+}
+.rail-btn span {
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+.rail-keys {
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+.rail-keys kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 1px 5px;
+  margin-right: 4px;
+  border-radius: 5px;
+  border: 1px solid var(--line-2);
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink);
+  text-align: center;
+}
+.rail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 99px;
+  border: 1px solid rgba(163, 230, 53, 0.35);
+  background: rgba(163, 230, 53, 0.1);
+  color: var(--lime);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  align-self: flex-start;
+}
+.rail-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 8px var(--lime);
+}
+.rail-live {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* DOM game sebagai kartu kabinet di mode layar besar */
+body.big .screen-body.dom-game {
+  flex: 0 1 auto;
+  max-width: min(660px, 92vw);
+  width: 100%;
+  margin: 0 auto;
+  max-height: calc(100dvh - 170px);
+  padding: 18px clamp(12px, 3vw, 26px) 20px;
+  border-radius: 20px;
+  border: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(18, 28, 50, 0.72), rgba(10, 16, 28, 0.88));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(78, 225, 255, 0.06);
+  backdrop-filter: blur(8px);
+  overflow-y: auto;
+}
+body.big .reels {
+  gap: 12px;
+}
+body.big .reel {
+  width: 96px;
+  height: 116px;
+  border-radius: 14px;
+  font-size: 56px;
+  box-shadow: inset 0 0 22px rgba(78, 225, 255, 0.18), 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+body.big .pay-table {
+  font-size: 11px;
+}
+body.big .casino {
+  max-width: 620px;
+}
+body.big .num-grid {
+  max-width: 460px;
+  margin: 0 auto;
+}
+body.big .mem-grid {
+  max-width: min(560px, 86vw);
+}
+
+/* ------------------------- polish visual (v2, global) ---------------------- */
+.score-chip,
+.chip {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.chip-score {
+  box-shadow: 0 0 18px rgba(78, 225, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* bidak & koin papan: kilau + bayangan */
+.piece,
+.disc {
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.45), inset 0 -3px 6px rgba(0, 0, 0, 0.35), inset 0 3px 6px rgba(255, 255, 255, 0.22);
+}
+.piece::after,
+.disc::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  top: 12%;
+  width: 38%;
+  height: 26%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.32);
+  filter: blur(1px);
+  pointer-events: none;
+}
+.disc.black::after,
+.piece.blk::after {
+  background: rgba(255, 255, 255, 0.18);
+}
+.piece.king {
+  color: #fde68a;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  font-size: 0.9em;
+}
+
+/* papan catur/checker lebih hidup */
+.sq8.light {
+  background: linear-gradient(145deg, #e8eef7, #c3d2e4);
+}
+.sq8.dark {
+  background: linear-gradient(145deg, #46637f, #2f455d);
+}
+.sq8.sel {
+  outline: 2px solid var(--amber);
+  box-shadow: inset 0 0 14px rgba(251, 191, 36, 0.5);
+}
+.sq8.can::after {
+  box-shadow: 0 0 10px var(--cyan), inset 0 0 6px rgba(255, 255, 255, 0.6);
+  animation: canpulse 1.1s ease-in-out infinite alternate;
+}
+@keyframes canpulse {
+  from {
+    transform: scale(0.82);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+/* tombol di area game: gradien + feedback tekan */
+#main .btn,
+#main .casino-choice,
+#main .np-btn,
+#main .puz-btn {
+  transition: transform 0.08s ease, filter 0.12s ease, box-shadow 0.12s ease;
+}
+#main .btn:hover,
+#main .casino-choice:hover,
+#main .np-btn:hover {
+  filter: brightness(1.12);
+}
+#main .btn:active,
+#main .casino-choice:active,
+#main .np-btn:active,
+#main button:active {
+  transform: scale(0.97);
+}
+#main .btn.primary {
+  background: linear-gradient(180deg, #67e8f9, #22b8d8);
+  border-color: rgba(120, 240, 255, 0.55);
+  color: #04202a;
+  box-shadow: 0 8px 22px rgba(34, 184, 216, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* pad tombol: kaca + glow */
+.pad {
+  gap: 6px;
+}
+.pad-btn {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--line-2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.pad-btn:active,
+.pad-btn.active {
+  background: rgba(78, 225, 255, 0.22);
+  border-color: rgba(78, 225, 255, 0.55);
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(78, 225, 255, 0.28);
+}
+
+/* overlay akhir ronde lebih dramatis */
+.overlay {
+  background: radial-gradient(60% 60% at 50% 40%, rgba(10, 18, 32, 0.55), rgba(4, 7, 14, 0.82));
+}
+.overlay-card {
+  animation: popin 0.22s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+@keyframes popin {
+  from {
+    transform: translateY(10px) scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* kartu placeholder (belum dibagikan) */
+.pcard.back.ghost {
+  background: transparent;
+  border-style: dashed;
+  border-color: rgba(120, 160, 255, 0.28);
+  color: rgba(120, 160, 255, 0.35);
+  box-shadow: none;
+}
+
+/* dadu lebih berdimensi */
+.die {
+  background: linear-gradient(155deg, #ffffff, #cbd5e1);
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.9), inset 0 -3px 6px rgba(0, 0, 0, 0.18);
+  color: #0f172a;
 }

@@ -185,6 +185,7 @@ function baseScreen(root, opts = {}) {
 /* Screen untuk game berbasis DOM (kartu, papan, dll). */
 export function createScreen(root, opts = {}) {
   const base = baseScreen(root, opts);
+  base.body.classList.add("dom-game");
   const setScore = base.setScore;
 
   const end = ({ score = 0, title = "Selesai!", sub = "", retry, action = "Main lagi", sound = "over" } = {}) => {
@@ -209,7 +210,10 @@ export function createStage(root, opts = {}) {
   const { body } = base;
 
   const canvas = h("canvas", { class: "game-canvas" });
-  const stageWrap = h("div", { class: "stage" }, [canvas]);
+  const fxCanvas = h("canvas", { class: "fx-canvas" });
+  const flashEl = h("div", { class: "fx-flash" });
+  const scanEl = h("div", { class: "fx-scan" });
+  const stageWrap = h("div", { class: "stage" }, [canvas, fxCanvas, flashEl, scanEl]);
   // stage mengikuti aspect ratio & tinggi viewport
   stageWrap.style.setProperty("--ar", String(w / height));
   body.append(stageWrap);
@@ -220,6 +224,131 @@ export function createStage(root, opts = {}) {
   const ctx2d = canvas.getContext("2d");
   ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx2d.imageSmoothingEnabled = false;
+
+  fxCanvas.width = canvas.width;
+  fxCanvas.height = canvas.height;
+  const fx = fxCanvas.getContext("2d");
+  fx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  /* ---------- juice: partikel, shake, flash, hitstop ---------- */
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  let fxParts = [];
+  let fxRings = [];
+  let fxPops = [];
+  let shakeMag = 0;
+  let shakeT = 0;
+  let flashA = 0;
+  let flashColor = "#fff";
+  let hitstopT = 0;
+
+  const burst = (x, y, opts2 = {}) => {
+    const { n = 12, color = "#4ee1ff", speed = 150, life = 0.55, size = 2.4, spread = Math.PI * 2, angle = 0, gravity = 0 } = opts2;
+    for (let i = 0; i < n; i++) {
+      const a = angle + rand(-spread / 2, spread / 2);
+      const sp = rand(speed * 0.35, speed);
+      fxParts.push({
+        x,
+        y,
+        vx: Math.cos(a) * sp,
+        vy: Math.sin(a) * sp,
+        life: rand(life * 0.6, life),
+        max: life,
+        color,
+        size: rand(size * 0.6, size),
+        gravity,
+      });
+    }
+  };
+  const ring = (x, y, opts2 = {}) => {
+    const { color = "#4ee1ff", r = 40, width = 2, life = 0.4 } = opts2;
+    fxRings.push({ x, y, r: 4, target: r, width, life, max: life, color });
+  };
+  const pop = (x, y, text, opts2 = {}) => {
+    const { color = "#fbbf24", life = 0.7, size = 11 } = opts2;
+    fxPops.push({ x, y, text: String(text), life, max: life, color, size });
+  };
+  const shake = (mag = 6, ms = 240) => {
+    if (reduceMotion) return;
+    shakeMag = Math.max(shakeMag, mag);
+    shakeT = Math.max(shakeT, ms / 1000);
+  };
+  const flash = (color = "rgba(255,255,255,0.35)", ms = 180) => {
+    flashColor = color;
+    flashA = 1;
+    flashT = ms / 1000;
+  };
+  let flashT = 0;
+  const hitstop = (ms = 70) => {
+    hitstopT = Math.max(hitstopT, ms / 1000);
+  };
+
+  const drawFx = (dt) => {
+    fx.clearRect(0, 0, w, height);
+    for (const p of fxParts) {
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += p.gravity * dt;
+      p.vx *= 0.965;
+      p.vy *= 0.965;
+      p.life -= dt;
+      const a = Math.max(0, p.life / p.max);
+      fx.globalAlpha = a;
+      fx.fillStyle = p.color;
+      fx.beginPath();
+      fx.arc(p.x, p.y, p.size * (0.5 + a * 0.5), 0, Math.PI * 2);
+      fx.fill();
+    }
+    fx.globalAlpha = 1;
+    fxParts = fxParts.filter((p) => p.life > 0);
+    if (fxParts.length > 420) fxParts.splice(0, fxParts.length - 420);
+
+    for (const r of fxRings) {
+      r.life -= dt;
+      const k = 1 - Math.max(0, r.life) / r.max;
+      fx.globalAlpha = Math.max(0, 1 - k);
+      fx.strokeStyle = r.color;
+      fx.lineWidth = r.width * (1 - k * 0.6);
+      fx.beginPath();
+      fx.arc(r.x, r.y, 4 + (r.target - 4) * k, 0, Math.PI * 2);
+      fx.stroke();
+    }
+    fx.globalAlpha = 1;
+    fxRings = fxRings.filter((r) => r.life > 0);
+
+    for (const p of fxPops) {
+      p.life -= dt;
+      const k = Math.max(0, p.life / p.max);
+      p.y -= dt * 34;
+      fx.globalAlpha = k;
+      fx.fillStyle = p.color;
+      fx.font = `800 ${p.size}px ui-monospace, monospace`;
+      fx.textAlign = "center";
+      fx.fillText(p.text, p.x, p.y);
+    }
+    fx.globalAlpha = 1;
+    fxPops = fxPops.filter((p) => p.life > 0);
+
+    // shake + flash
+    if (shakeT > 0) {
+      shakeT -= dt;
+      const k = Math.max(0, shakeT * 4);
+      const dx = (Math.random() * 2 - 1) * shakeMag * k;
+      const dy = (Math.random() * 2 - 1) * shakeMag * k;
+      stageWrap.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px)`;
+      if (shakeT <= 0) {
+        shakeMag = 0;
+        stageWrap.style.transform = "";
+      }
+    }
+    if (flashT > 0) {
+      flashT -= dt;
+      flashA = Math.max(0, flashT * 5);
+      flashEl.style.background = flashColor;
+      flashEl.style.opacity = String(Math.min(1, flashA));
+      if (flashT <= 0) flashEl.style.opacity = "0";
+    }
+  };
+
 
   /* ---------- input keyboard ---------- */
   const keys = new Set();
@@ -355,7 +484,11 @@ export function createStage(root, opts = {}) {
     if (!alive) return;
     const dt = last ? Math.min(0.05, (ts - last) / 1000) : 0;
     last = ts;
-    if (!paused && tickFn) tickFn(dt, ts / 1000);
+    if (!paused) {
+      if (hitstopT > 0) hitstopT = Math.max(0, hitstopT - dt);
+      else if (tickFn) tickFn(dt, ts / 1000);
+      drawFx(dt);
+    }
     rafId = requestAnimationFrame(frame);
   };
   rafId = requestAnimationFrame(frame);
@@ -415,6 +548,14 @@ export function createStage(root, opts = {}) {
     setScore: base.setScore,
     hideOverlay: base.hideOverlay,
     showOverlay: base.showOverlay,
+    // juice
+    burst,
+    ring,
+    pop,
+    shake,
+    flash,
+    hitstop,
+    stage: stageWrap,
     emit: base.emit,
     listen: (fn) => base.listen.push(fn),
   };

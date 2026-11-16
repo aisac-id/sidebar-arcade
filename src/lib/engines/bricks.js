@@ -36,6 +36,7 @@ export function createBricks(ctx, cfg = {}) {
   const bg = cfg.bg || ["#070b16", "#111a2e"];
 
   let paddle, balls, bricks, drops, parts, score, lives, level, over, launched, wideT, slowT, dropT, t, shake;
+  let combo = 0;
   let descendT;
   let best = 0;
 
@@ -83,6 +84,7 @@ export function createBricks(ctx, cfg = {}) {
     dropT = 0;
     t = 0;
     shake = 0;
+    combo = 0;
     descendT = 1.6;
     buildLevel(1);
     if (full) st.setScore(0);
@@ -111,6 +113,10 @@ export function createBricks(ctx, cfg = {}) {
   function loseLife() {
     lives--;
     shake = 10;
+    combo = 0;
+    st.flash("rgba(255,90,110,0.3)", 200);
+    st.shake(10, 320);
+    st.burst(paddle.x, H - 40, { n: 16, color: "#fb7185", speed: 190, size: 2.8, gravity: 140 });
     sfx("hit");
     if (lives <= 0) {
       over = true;
@@ -147,6 +153,8 @@ export function createBricks(ctx, cfg = {}) {
     } else if (p.id === "life") {
       lives = Math.min(5, lives + 1);
     }
+    st.pop(p.x, H - 54, p.id.toUpperCase(), { color: p.color, size: 10 });
+    st.ring(p.x, H - 44, { color: p.color, r: 40, width: 2 });
     sfx("point");
   }
 
@@ -158,14 +166,27 @@ export function createBricks(ctx, cfg = {}) {
       return;
     }
     b.alive = false;
-    score += b.bomb ? 15 : 10;
+    combo++;
+    const gain = Math.round((b.bomb ? 15 : 10) * (1 + Math.min(combo, 12) * 0.05));
+    score += gain;
     st.setScore(score);
-    addParts(b.x + b.w / 2, b.y + b.h / 2, PALETTE[b.row % PALETTE.length], 7);
-    spawnDrop(b.x + b.w / 2, b.y + b.h / 2);
+    const bx = b.x + b.w / 2;
+    const by = b.y + b.h / 2;
+    const col = PALETTE[b.row % PALETTE.length];
+    addParts(bx, by, col, 7);
+    st.burst(bx, by, { n: 7, color: col, speed: 150, size: 2.2, life: 0.4 });
+    if (combo > 0 && combo % 5 === 0) {
+      st.pop(bx, by - 8, `x${combo}`, { color: "#ffd166", size: 11 });
+      st.ring(bx, by, { color: "#ffd166", r: 34, width: 1.8 });
+    }
+    spawnDrop(bx, by);
     sfx("drop");
     if (b.bomb) {
       shake = 8;
-      addParts(b.x + b.w / 2, b.y + b.h / 2, "#ffb347", 22);
+      st.shake(10, 320);
+      st.flash("rgba(255,180,80,0.28)", 200);
+      st.ring(bx, by, { color: "#ffb347", r: 70, width: 3, life: 0.45 });
+      addParts(bx, by, "#ffb347", 22);
       for (const o of bricks) {
         if (!o.alive) continue;
         const dx = o.x + o.w / 2 - (b.x + b.w / 2);
@@ -185,6 +206,9 @@ export function createBricks(ctx, cfg = {}) {
     level++;
     score += 40 * level;
     st.setScore(score);
+    st.flash("rgba(160,230,255,0.3)", 260);
+    st.shake(8, 300);
+    st.pop(W / 2, H / 2 - 30, `LEVEL ${level}`, { color: "#4ee1ff", size: 14, life: 1 });
     sfx("win");
     wideT = 0;
     slowT = 0;
@@ -258,6 +282,8 @@ export function createBricks(ctx, cfg = {}) {
         const ang = -Math.PI / 2 + rel * 0.95;
         b.vx = Math.cos(ang) * sp;
         b.vy = Math.sin(ang) * sp;
+        combo = 0;
+        st.ring(b.x, b.y, { color: "#4ee1ff", r: 18, width: 1.4, life: 0.25 });
         sfx("flip");
       }
 

@@ -196,11 +196,13 @@ export function createRunner(ctx, cfg = {}) {
   const runnerType = cfg.runner || "human";
   const color = cfg.color || "#a3e635";
   const obsColor = cfg.obsColor || "#fb7185";
-  const doubleJump = !!cfg.doubleJump;
+  const doubleJump = cfg.doubleJump !== false;
   const groundY = H - 46;
   const gravity = cfg.gravity ?? (mode === "fly" ? 950 : 1500);
 
   let P, obstacles, coins, parts, dist, speed, over, spawnT, coinT, t, shake, run, jumps, duck, fuel;
+  let dashT = 0;
+  let dashCD = 0;
   let best = 0;
 
   const baseSpeed = cfg.speed ?? (mode === "ground" ? 175 : 140);
@@ -221,6 +223,8 @@ export function createRunner(ctx, cfg = {}) {
     jumps = 0;
     duck = false;
     fuel = 100;
+    dashT = 0;
+    dashCD = 0;
     st.hideOverlay();
     st.setScore(0);
   }
@@ -244,10 +248,24 @@ export function createRunner(ctx, cfg = {}) {
     }
   }
 
+  function startDash() {
+    if (over || dashCD > 0 || dashT > 0) return;
+    dashT = 0.5;
+    dashCD = 2.4;
+    st.shake(5, 160);
+    st.flash("rgba(120,220,255,0.18)", 140);
+    st.pop(P.x + 16, P.y - 30, "DASH!", { color: "#4ee1ff", size: 11 });
+    sfx("win");
+  }
+
   st.onKeyDown((k) => {
     if (k === "space" || k === "up" || k === "enter") flap();
+    if (k === "shift" || k === "x") startDash();
   });
   st.onTap(() => flap());
+  st.onSwipe((dir) => {
+    if (dir === "right") startDash();
+  });
 
   function addParts(x, y, c, n = 8) {
     for (let i = 0; i < n; i++) {
@@ -285,6 +303,10 @@ export function createRunner(ctx, cfg = {}) {
     over = true;
     shake = 12;
     addParts(P.x, P.y - 14, "#ffb347", 20);
+    st.burst(P.x, P.y - 12, { n: 24, color: "#ffb347", speed: 240, size: 3, gravity: 160 });
+    st.flash("rgba(255,120,80,0.32)", 220);
+    st.shake(12, 380);
+    st.hitstop(90);
     sfx("hit");
     best = Math.max(best, Math.floor(dist));
     st.end({
@@ -301,7 +323,13 @@ export function createRunner(ctx, cfg = {}) {
     run += dt;
     shake = Math.max(0, shake - dt * 40);
 
-    speed = baseSpeed + Math.min(260, dist * 0.16);
+    dashT = Math.max(0, dashT - dt);
+    dashCD = Math.max(0, dashCD - dt);
+    const dashing = dashT > 0;
+    speed = (baseSpeed + Math.min(260, dist * 0.16)) * (dashing ? 2.1 : 1);
+    if (dashing) {
+      st.burst(P.x - 8, P.y - 12, { n: 2, color: "#4ee1ff", speed: 130, size: 2.4, life: 0.3, angle: Math.PI, spread: 0.9 });
+    }
     dist += (speed * dt) / 8;
     st.setScore(Math.floor(dist));
 
@@ -311,6 +339,9 @@ export function createRunner(ctx, cfg = {}) {
       P.vy += gravity * dt;
       P.y += P.vy * dt;
       if (P.y >= groundY) {
+        if (!P.onGround && P.vy > 240) {
+          st.burst(P.x, P.y, { n: 8, color: "#cbd5e1", speed: 120, size: 2, life: 0.35, angle: -Math.PI / 2, spread: 2.4 });
+        }
         P.y = groundY;
         P.vy = 0;
         P.onGround = true;
@@ -373,6 +404,14 @@ export function createRunner(ctx, cfg = {}) {
         }
       }
 
+      if (dashT > 0 && o.x + o.w > P.x - 40 && o.x < P.x + 30) {
+        o.dead = true;
+        dist += 8;
+        st.burst(clamp(o.x, 10, W - 10), o.y + o.h / 2, { n: 12, color: "#4ee1ff", speed: 220, size: 2.6, gravity: 120 });
+        st.pop(o.x, o.y - 6, "+8", { color: "#4ee1ff", size: 9 });
+        sfx("point");
+        continue;
+      }
       if (mode === "ground") {
         const ph = duck ? 20 : 34;
         const pw = duck ? 24 : 18;
@@ -393,6 +432,7 @@ export function createRunner(ctx, cfg = {}) {
         c.dead = true;
         dist += 6;
         addParts(c.x, c.y, "#fbbf24", 6);
+        st.burst(c.x, c.y, { n: 6, color: "#fbbf24", speed: 140, size: 2, life: 0.4 });
         sfx("point");
       }
     }

@@ -352,6 +352,9 @@ export function createShmup(ctx, cfg = {}) {
       P.shield = false;
       P.invuln = 0.8;
       addParts(P.x, P.y, "#4ee1ff", 14, 130);
+      st.burst(P.x, P.y, { n: 14, color: "#4ee1ff", speed: 170, size: 2.6 });
+      st.ring(P.x, P.y, { color: "#4ee1ff", r: 46, width: 2.4 });
+      st.shake(6, 200);
       sfx("hit");
       return;
     }
@@ -359,6 +362,10 @@ export function createShmup(ctx, cfg = {}) {
     P.invuln = 1.8;
     shake = 12;
     addParts(P.x, P.y, "#ff6b6b", 22, 180);
+    st.burst(P.x, P.y, { n: 22, color: "#ff7b7b", speed: 210, size: 3, gravity: 120 });
+    st.flash("rgba(255,80,100,0.3)", 200);
+    st.shake(12, 340);
+    st.hitstop(70);
     sfx("hit");
     if (lives <= 0) {
       P.alive = false;
@@ -369,6 +376,7 @@ export function createShmup(ctx, cfg = {}) {
   function endGame() {
     if (over) return;
     over = true;
+    st.flash("rgba(255,60,80,0.42)", 260);
     st.end({
       score,
       title: "Pesawat jatuh!",
@@ -383,11 +391,18 @@ export function createShmup(ctx, cfg = {}) {
       P.spreadT = 12;
     } else if (d.kind === "shield") {
       P.shield = true;
+      st.pop(d.x, d.y - 10, "SHIELD", { color: "#4ee1ff" });
     } else if (d.kind === "bomb") {
       ebullets = [];
       for (const e of enemies) e.hp -= 4;
       if (boss) boss.hp -= 10;
       shake = 10;
+      st.flash("rgba(180,235,255,0.5)", 240);
+      st.shake(14, 420);
+      st.ring(W / 2, H / 2, { color: "#bfefff", r: 260, width: 4, life: 0.6 });
+      st.pop(d.x, d.y - 10, "BOM!", { color: "#ffd166" });
+    } else {
+      st.pop(d.x, d.y - 10, "SPREAD", { color: "#a3e635" });
     }
     sfx("point");
   }
@@ -535,6 +550,7 @@ export function createShmup(ctx, cfg = {}) {
             ebullets.push({ x: boss.x + 24, y: boss.y + 12, vx: 0, vy: 125, r: 4, color: "#a78bfa" });
             boss.shootT = 0.4;
           }
+          if (boss.hp / boss.maxhp < 0.45) boss.shootT *= 0.62; // fase murka
           sfx("tick");
         }
         if (Math.hypot(boss.x - P.x, boss.y - P.y) < boss.r + 10) hurtPlayer();
@@ -562,6 +578,12 @@ export function createShmup(ctx, cfg = {}) {
             score += gain;
             st.setScore(score);
             addParts(e.x, e.y, enemyColor, e.big ? 18 : 10, e.big ? 170 : 110);
+            st.burst(e.x, e.y, { n: e.big ? 16 : 8, color: enemyColor, speed: e.big ? 210 : 150, size: 2.6 });
+            if (e.big) {
+              st.ring(e.x, e.y, { color: enemyColor, r: 40, width: 2 });
+              st.shake(6, 180);
+            }
+            if (combo >= 5) st.pop(e.x, e.y - 12, `x${combo}`, { color: "#ffd166", size: 12 });
             sfx("drop");
             if (Math.random() < (e.big ? 0.5 : 0.09)) {
               drops.push({ x: e.x, y: e.y, vy: 62, kind: pick(["spread", "spread", "shield", "bomb"]), spin: 0 });
@@ -583,6 +605,12 @@ export function createShmup(ctx, cfg = {}) {
           st.setScore(score);
           shake = 16;
           addParts(bx, by, "#ffd166", 40, 220);
+          st.burst(bx, by, { n: 46, color: "#ffd166", speed: 300, size: 3.6, life: 0.9, gravity: 90 });
+          st.ring(bx, by, { color: "#ffe9a8", r: 190, width: 4, life: 0.7 });
+          st.flash("rgba(255,225,150,0.55)", 340);
+          st.shake(18, 520);
+          st.hitstop(130);
+          st.pop(bx, by - 20, "BOSS DOWN", { color: "#ffe9a8", size: 14, life: 1.1 });
           sfx("win");
           drops.push({ x: bx - 18, y: by, vy: 54, kind: "spread", spin: 0 });
           drops.push({ x: bx + 18, y: by, vy: 54, kind: "shield", spin: 0 });

@@ -33,7 +33,7 @@ export function newDeck() {
 
 export function cardEl(c, hidden = false) {
   if (!c) return h("div", { class: "pcard empty" });
-  if (hidden) return h("div", { class: "pcard back" }, [h("span", { text: "🂠" })]);
+  if (hidden) return h("div", { class: "pcard back" }, [h("span", { text: "✦" })]);
   return h("div", { class: "pcard" + (isRed(c) ? " red" : "") }, [
     h("b", { text: rankTxt(c.r) }),
     h("span", { text: c.s }),

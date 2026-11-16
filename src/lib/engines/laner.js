@@ -134,6 +134,10 @@ export function createLaner(ctx, cfg = {}) {
   let shake = 0;
   let t = 0;
   let bestDist = 0;
+  let nitro = 1;
+  let nitroOn = false;
+  let coinCombo = 0;
+  let coinComboT = 0;
 
   function reset() {
     P.x = W / 2;
@@ -152,6 +156,10 @@ export function createLaner(ctx, cfg = {}) {
     scroll = 0;
     shake = 0;
     t = 0;
+    nitro = 1;
+    nitroOn = false;
+    coinCombo = 0;
+    coinComboT = 0;
     st.hideOverlay();
     st.setScore(0);
   }
@@ -198,6 +206,11 @@ export function createLaner(ctx, cfg = {}) {
     P.invuln = 1.6;
     shake = 12;
     addParts(P.x, P.y - 6, "#ffb347", 18, 200);
+    st.burst(P.x, P.y - 6, { n: 20, color: "#ffb347", speed: 220, size: 3, gravity: 140 });
+    st.flash("rgba(255,140,60,0.32)", 200);
+    st.shake(11, 340);
+    st.hitstop(80);
+    coinCombo = 0;
     sfx("hit");
     if (lives <= 0) {
       P.alive = false;
@@ -231,8 +244,24 @@ export function createLaner(ctx, cfg = {}) {
     if (dir) P.x += dir * 280 * dt;
     P.x = clamp(P.x, 20, W - 20);
 
+    // nitro: tahan Shift/Spasi untuk ngebut, meter terkuras lalu isi ulang
+    const wantBoost = st.isDown("shift", "space");
+    nitroOn = wantBoost && nitro > 0.02 && !over;
+    if (nitroOn) {
+      nitro = Math.max(0, nitro - dt * 0.42);
+      if (Math.random() < 0.55) {
+        st.burst(P.x + rand(-8, 8), P.y + 16, { n: 1, color: "#8be9ff", speed: 80, size: 2, life: 0.3, angle: Math.PI / 2, spread: 0.6 });
+      }
+    } else {
+      nitro = Math.min(1, nitro + dt * 0.16);
+    }
+
     // kecepatan naik pelan-pelan
-    speed = baseSpeed + Math.min(320, dist * 0.22);
+    speed = (baseSpeed + Math.min(320, dist * 0.22)) * (nitroOn ? 1.6 : 1);
+    if (coinComboT > 0) {
+      coinComboT -= dt;
+      if (coinComboT <= 0) coinCombo = 0;
+    }
     dist += (speed * dt) / 9;
     st.setScore(Math.floor(dist));
 
@@ -253,6 +282,18 @@ export function createLaner(ctx, cfg = {}) {
     for (const o of obstacles) {
       o.y += speed * dt;
       o.x = laneX(o.lane);
+      if (!o.passed && o.y > P.y + 26) {
+        o.passed = true;
+        const gap = Math.abs(o.x - P.x);
+        if (gap > (o.w + 15) / 2 && gap < laneW * 0.95) {
+          // nyaris kena: bonus poin + isi nitro
+          dist += 6;
+          nitro = Math.min(1, nitro + 0.1);
+          st.pop(o.x, P.y - 16, "NYARIS!", { color: "#ffd166", size: 9 });
+          st.burst(P.x + (o.x > P.x ? 12 : -12), P.y, { n: 5, color: "#ffd166", speed: 110, size: 1.8, life: 0.35 });
+          sfx("tick");
+        }
+      }
       if (o.y > H + 40) o.dead = true;
       if (Math.abs(o.x - P.x) < (o.w + 15) / 2 && Math.abs(o.y - P.y) < (o.h + 26) / 2) {
         o.dead = true;
@@ -267,9 +308,15 @@ export function createLaner(ctx, cfg = {}) {
       if (c.y > H + 20) c.dead = true;
       else if (Math.hypot(c.x - P.x, c.y - P.y) < 16) {
         c.dead = true;
-        dist += 12;
+        coinCombo++;
+        coinComboT = 1.6;
+        const gain = 12 * Math.min(5, 1 + Math.floor(coinCombo / 3));
+        dist += gain;
         st.setScore(Math.floor(dist));
         addParts(c.x, c.y, "#fbbf24", 6, 90);
+        st.burst(c.x, c.y, { n: 8, color: "#fbbf24", speed: 130, size: 2.2, life: 0.45 });
+        st.ring(c.x, c.y, { color: "#fbbf24", r: 22, width: 1.6, life: 0.3 });
+        if (coinCombo >= 3) st.pop(c.x, c.y - 10, `+${gain}`, { color: "#fbbf24", size: 10 });
         sfx("point");
       }
     }
@@ -361,10 +408,29 @@ export function createLaner(ctx, cfg = {}) {
       g.arc(x, 18, 5, 0, Math.PI * 2);
       g.fill();
     }
+    // garis kecepatan saat nitro
+    if (nitroOn) {
+      g.globalAlpha = 0.5;
+      for (let i = 0; i < 9; i++) {
+        const x = ((i * 47 + scroll * 0.6) % W);
+        g.fillStyle = i % 2 ? "#8be9ff" : "#ffffff";
+        g.fillRect(x, (i * 53 + scroll * 1.4) % H, 1.6, 26 + (i % 3) * 12);
+      }
+      g.globalAlpha = 1;
+    }
     g.fillStyle = "rgba(231,236,247,0.85)";
     g.font = "700 11px ui-monospace, monospace";
     g.textAlign = "left";
     g.fillText(`${Math.floor(dist)} m`, 12, 20);
+    // bar nitro
+    const nw = 54;
+    g.fillStyle = "rgba(255,255,255,0.14)";
+    g.fillRect(12, H - 16, nw, 5);
+    g.fillStyle = nitroOn ? "#8be9ff" : "#4ee1ff";
+    g.fillRect(12, H - 16, nw * nitro, 5);
+    g.font = "700 7px ui-monospace, monospace";
+    g.fillStyle = "rgba(231,236,247,0.6)";
+    g.fillText("NITRO", 12, H - 21);
     g.restore();
   }
 

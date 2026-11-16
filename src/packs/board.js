@@ -608,12 +608,16 @@ function blackjack(ctx) {
   g.wrap.append(h("p", { class: "hand-label", text: "DEALER" }), dealerEl, h("p", { class: "hand-label", text: "KAMU" }), playerEl, bu.row, row, reset);
   let deck, p = [], d = [], phase = "idle", stake = 0;
 
+  const ghost = () => h("span", { class: "pcard back ghost", text: "✦" });
   const render = (hide) => {
     dealerEl.innerHTML = "";
     playerEl.innerHTML = "";
+    if (!d.length) dealerEl.append(ghost(), ghost());
+    if (!p.length) playerEl.append(ghost(), ghost());
     d.forEach((c, i) => dealerEl.append(cardEl(c, hide && i === 1)));
     p.forEach((c) => playerEl.append(cardEl(c)));
   };
+  render(false);
   const btnState = () => {
     dealBtn.disabled = phase === "play";
     hitBtn.disabled = phase !== "play";
