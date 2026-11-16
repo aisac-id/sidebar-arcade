@@ -4,6 +4,11 @@
 
 # Sidebar Arcade 👾
 
+<p align="center">
+  <img src="promo/banner.png" alt="Sidebar Arcade banner" width="100%">
+</p>
+
+
 **115 game mini di Chrome Side Panel.** Klik ikon extension, panel samping terbuka, pilih game, langsung main. Tanpa akun, tanpa iklan, tanpa koneksi internet.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-4ee1ff.svg)](LICENSE)
@@ -123,44 +128,6 @@ Klik **↗** di header panel (atau tekan `F`) untuk membuka game yang sedang akt
     <td><img src="docs/preview-big.png" alt="Mode layar besar" width="360"></td>
   </tr>
 </table>
-
-## Brand & promotion kit
-
-Semua aset siap pakai ada di repo (`brand/` dan `promo/`). Bebas dipakai untuk postingan, listing Chrome Web Store, atau artikel.
-
-| Aset | File | Ukuran |
-|------|------|--------|
-| Logo utama (transparan) | `brand/logo-mark.png` | 1024×1024 |
-| Logo + glow | `brand/logo-mark-glow.png` | 512×512 |
-| Wordmark transparan | `brand/wordmark.png` | — |
-| Lockup logo + tagline | `brand/logo-lockup.png` | 1536×1024 |
-| Ikon extension | `icons/icon{16,32,48,128,512}.png` | 16–512 px |
-| Software box 3D | `promo/software-box.png` | 1400×1560 |
-| Muka box (flat) | `brand/box-front.png` | 704×992 |
-| Poster hero / banner lebar | `promo/poster-hero.png` | 1792×1024 |
-| Poster vertikal (story/A4) | `promo/poster-vertical.png` | 1080×1620 |
-| Social square (IG/feed) | `promo/social-square.png` | 1080×1080 |
-| Social wide (X/LinkedIn) | `promo/social-wide-1280x640.png` | 1280×640 |
-| Open Graph | `promo/og-1200x630.png` | 1200×630 |
-| Store marquee | `promo/store-marquee-1400x560.png` | 1400×560 |
-| Store small tile | `promo/store-small-440x280.png` | 440×280 |
-| Video promo (1 file, ada musik) | `promo/sidebar-arcade-promo.mp4` | 1920×1080 · 8 s |
-| Poster frame video | `promo/video-poster.jpg` | 1920×1080 |
-
-<table>
-  <tr>
-    <td><img src="promo/software-box.png" alt="Software box" width="330"></td>
-    <td><img src="promo/poster-vertical.png" alt="Poster vertikal" width="330"></td>
-  </tr>
-  <tr>
-    <td><img src="promo/social-square.png" alt="Social square" width="330"></td>
-    <td><img src="promo/store-marquee-1400x560.png" alt="Store marquee" width="330"></td>
-  </tr>
-</table>
-
-Palet brand: `#070a12` background · `#4ee1ff` cyan · `#a78bfa` violet · `#ff6bd6` pink · `#a3e635` lime · `#fbbf24` amber · `#fb7185` red · `#e7ecf7` ink.
-
-Aset dibangun dari art generator + **screenshot asli extension**, lalu tipografi, ikon vektor, dan box 3D-nya digambar ulang secara presisi (script: `tools/build_assets.py`, `tools/build_video_frames.py`). Detail: [promo/README.md](promo/README.md).
 
 ## Instalasi (Load unpacked)
 
@@ -301,3 +268,27 @@ PR game baru sangat welcome. Aturan mainnya cuma:
 ## Lisensi
 
 [MIT](LICENSE) — bebas dipakai, diubah, dan dibagikan.
+
+---
+
+## Brand & Promotion Kit
+
+Aset branding resmi **Sidebar Arcade** — logo, software box, poster, banner, dan materi sosial.
+Semua aset berada di folder [`promo/`](promo/) dan bebas dipakai untuk materi promosi proyek ini.
+
+<p align="center">
+  <img src="promo/software-box.png" alt="Sidebar Arcade software box" width="640">
+</p>
+
+| Aset | Pratinjau | Ukuran |
+|---|---|---|
+| Logo | <img src="promo/logo.png" width="96"> | 1024×1024 |
+| Wordmark | <img src="promo/logo-wordmark.png" width="240"> | 1600×500 |
+| Software Box | <img src="promo/software-box.png" width="240"> | 1600×1200 |
+| Poster | <img src="promo/poster.png" width="160"> | 1200×1600 |
+| Banner | <img src="promo/banner.png" width="280"> | 1920×820 |
+| Social Preview | <img src="promo/social-preview.png" width="240"> | 1280×640 |
+| Feature Showcase | <img src="promo/feature-showcase.png" width="240"> | 1600×1000 |
+| Social Square | <img src="promo/social-square.png" width="120"> | 1080×1080 |
+
+**Video promosi:** [sidebar-arcade-promo.mp4](promo/sidebar-arcade-promo.mp4)
