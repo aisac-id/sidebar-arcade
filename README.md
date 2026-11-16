@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="brand/logo-mark.png" alt="Sidebar Arcade logo" width="132">
+</p>
+
 # Sidebar Arcade 👾
 
 **115 game mini di Chrome Side Panel.** Klik ikon extension, panel samping terbuka, pilih game, langsung main. Tanpa akun, tanpa iklan, tanpa koneksi internet.
@@ -7,7 +11,9 @@
 [![Vanilla JS](https://img.shields.io/badge/vanilla-JS%20%2B%20Canvas-fbbf24.svg)](#struktur-project)
 [![Games](https://img.shields.io/badge/games-115-4ade80.svg)](#daftar-game)
 
-![Sidebar Arcade](docs/preview-arcade.png)
+[![Sidebar Arcade](promo/poster-hero.png)](promo/sidebar-arcade-promo.mp4)
+
+<p align="center"><em>▶︎ <a href="promo/sidebar-arcade-promo.mp4">Tonton video promo (8 detik, 1080p)</a></em></p>
 
 Dibuat buat nemenin nungguin agent kerja (atau deploy, atau build, atau apapun). Panel-nya sempit, tabnya ke bawah, jadi nggak ganggu tab yang lagi kebuka.
 
@@ -118,6 +124,44 @@ Klik **↗** di header panel (atau tekan `F`) untuk membuka game yang sedang akt
   </tr>
 </table>
 
+## Brand & promotion kit
+
+Semua aset siap pakai ada di repo (`brand/` dan `promo/`). Bebas dipakai untuk postingan, listing Chrome Web Store, atau artikel.
+
+| Aset | File | Ukuran |
+|------|------|--------|
+| Logo utama (transparan) | `brand/logo-mark.png` | 1024×1024 |
+| Logo + glow | `brand/logo-mark-glow.png` | 512×512 |
+| Wordmark transparan | `brand/wordmark.png` | — |
+| Lockup logo + tagline | `brand/logo-lockup.png` | 1536×1024 |
+| Ikon extension | `icons/icon{16,32,48,128,512}.png` | 16–512 px |
+| Software box 3D | `promo/software-box.png` | 1400×1560 |
+| Muka box (flat) | `brand/box-front.png` | 704×992 |
+| Poster hero / banner lebar | `promo/poster-hero.png` | 1792×1024 |
+| Poster vertikal (story/A4) | `promo/poster-vertical.png` | 1080×1620 |
+| Social square (IG/feed) | `promo/social-square.png` | 1080×1080 |
+| Social wide (X/LinkedIn) | `promo/social-wide-1280x640.png` | 1280×640 |
+| Open Graph | `promo/og-1200x630.png` | 1200×630 |
+| Store marquee | `promo/store-marquee-1400x560.png` | 1400×560 |
+| Store small tile | `promo/store-small-440x280.png` | 440×280 |
+| Video promo (1 file, ada musik) | `promo/sidebar-arcade-promo.mp4` | 1920×1080 · 8 s |
+| Poster frame video | `promo/video-poster.jpg` | 1920×1080 |
+
+<table>
+  <tr>
+    <td><img src="promo/software-box.png" alt="Software box" width="330"></td>
+    <td><img src="promo/poster-vertical.png" alt="Poster vertikal" width="330"></td>
+  </tr>
+  <tr>
+    <td><img src="promo/social-square.png" alt="Social square" width="330"></td>
+    <td><img src="promo/store-marquee-1400x560.png" alt="Store marquee" width="330"></td>
+  </tr>
+</table>
+
+Palet brand: `#070a12` background · `#4ee1ff` cyan · `#a78bfa` violet · `#ff6bd6` pink · `#a3e635` lime · `#fbbf24` amber · `#fb7185` red · `#e7ecf7` ink.
+
+Aset dibangun dari art generator + **screenshot asli extension**, lalu tipografi, ikon vektor, dan box 3D-nya digambar ulang secara presisi (script: `tools/build_assets.py`, `tools/build_video_frames.py`). Detail: [promo/README.md](promo/README.md).
+
 ## Instalasi (Load unpacked)
 
 1. Download repo ini (Code → Download ZIP) lalu extract, atau:
@@ -154,6 +198,9 @@ sidebar-arcade/
 ├── background.js          # service worker: buka panel saat ikon diklik
 ├── sidepanel.html         # shell: sidebar vertikal + area game
 ├── icons/                 # ikon 16/32/48/128 (+ master 512)
+├── brand/                 # logo, wordmark, muka box
+├── promo/                 # poster, banner, software box, video promo
+├── tools/                 # script pembangun aset brand/promo (Python + PIL)
 ├── docs/                  # screenshot untuk README
 └── src/
     ├── app.js             # routing tab, simpan skor, sound, pencarian

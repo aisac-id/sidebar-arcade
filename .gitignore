@@ -1,13 +1,3 @@
-# OS
-.DS_Store
-Thumbs.db
-
-# Editor
-.vscode/
-.idea/
-
-# Build / packaging
-*.zip
-*.crx
-*.pem
-node_modules/
+tools/out/
+__pycache__/
+*.pyc
