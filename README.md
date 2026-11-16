@@ -274,11 +274,11 @@ PR game baru sangat welcome. Aturan mainnya cuma:
 
 ## Brand & Promotion Kit
 
-Aset branding resmi **Sidebar Arcade** — logo, software box, poster, banner, dan materi sosial.
+Aset branding resmi **GLOW** — logo, software box, poster, banner, dan materi sosial.
 Semua aset berada di folder [`promo/`](promo/) dan bebas dipakai untuk materi promosi proyek ini.
 
 <p align="center">
-  <img src="promo/software-box.png" alt="Sidebar Arcade software box" width="640">
+  <img src="promo/software-box.png" alt="GLOW software box" width="640">
 </p>
 
 | Aset | Pratinjau | Ukuran |
