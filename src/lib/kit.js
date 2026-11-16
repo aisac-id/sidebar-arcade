@@ -25,6 +25,15 @@ export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const rand = (a = 0, b = 1) => a + Math.random() * (b - a);
 export const randInt = (a, b) => Math.floor(rand(a, b + 1));
 export const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+export function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export const fmt = (n) => (n === null || n === undefined || !isFinite(n) ? "—" : String(n));
 
 /* ---------------------------------- SFX ---------------------------------- */
@@ -238,16 +247,49 @@ export function createStage(root, opts = {}) {
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
 
-  /* ---------- tap & swipe ---------- */
+  /* ---------- tap, swipe & pointer ---------- */
   let swipeStart = null;
   const tapHandlers = [];
   const swipeHandlers = [];
-  const onPointerDown = (e) => {
+  const pointerHandlers = [];
+  const pointer = { x: w / 2, y: height / 2, down: false, inside: false };
+  const toLocal = (e) => {
     const rect = canvas.getBoundingClientRect();
-    swipeStart = { x: e.clientX, y: e.clientY, ...rect };
-    tapHandlers.forEach((fn) => fn());
+    return {
+      x: ((e.clientX - rect.left) / Math.max(1, rect.width)) * w,
+      y: ((e.clientY - rect.top) / Math.max(1, rect.height)) * height,
+    };
+  };
+  const firePointer = (type) => pointerHandlers.forEach((fn) => fn(pointer, type));
+  const onPointerDown = (e) => {
+    const p = toLocal(e);
+    pointer.x = p.x;
+    pointer.y = p.y;
+    pointer.down = true;
+    pointer.inside = true;
+    try {
+      canvas.setPointerCapture(e.pointerId);
+    } catch {}
+    firePointer("down");
+    swipeStart = { x: e.clientX, y: e.clientY };
+    tapHandlers.forEach((fn) => fn({ x: p.x, y: p.y }));
+  };
+  const onPointerMove = (e) => {
+    const p = toLocal(e);
+    pointer.x = p.x;
+    pointer.y = p.y;
+    pointer.inside = true;
+    firePointer("move");
+  };
+  const onPointerLeave = () => {
+    pointer.inside = false;
   };
   const onPointerUp = (e) => {
+    const p = toLocal(e);
+    pointer.x = p.x;
+    pointer.y = p.y;
+    pointer.down = false;
+    firePointer("up");
     if (!swipeStart) return;
     const dx = e.clientX - swipeStart.x;
     const dy = e.clientY - swipeStart.y;
@@ -258,6 +300,8 @@ export function createStage(root, opts = {}) {
     downHandlers.forEach((fn) => fn(dir));
   };
   canvas.addEventListener("pointerdown", onPointerDown);
+  canvas.addEventListener("pointermove", onPointerMove);
+  canvas.addEventListener("pointerleave", onPointerLeave);
   window.addEventListener("pointerup", onPointerUp);
 
   /* ---------- pad tombol layar (mobile friendly) ---------- */
@@ -343,6 +387,8 @@ export function createStage(root, opts = {}) {
     window.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("keyup", onKeyUp);
     window.removeEventListener("pointerup", onPointerUp);
+    canvas.removeEventListener("pointermove", onPointerMove);
+    canvas.removeEventListener("pointerleave", onPointerLeave);
     document.removeEventListener("visibilitychange", onVisibility);
     base.cleanup();
   };
@@ -362,6 +408,8 @@ export function createStage(root, opts = {}) {
     destroy,
     isDown: (...names) => names.some((n) => keys.has(n)),
     onKeyDown: (fn) => downHandlers.push(fn),
+    pointer,
+    onPointer: (fn) => pointerHandlers.push(fn),
     onTap: (fn) => tapHandlers.push(fn),
     onSwipe: (fn) => swipeHandlers.push(fn),
     setScore: base.setScore,

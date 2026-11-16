@@ -13,6 +13,16 @@ import whack from "./games/whack.js";
 import reaction from "./games/reaction.js";
 import connect4 from "./games/connect4.js";
 import simon from "./games/simon.js";
+import { shooters } from "./packs/shooters.js";
+import { racing } from "./packs/racing.js";
+import { bricks } from "./packs/bricks.js";
+import { runners } from "./packs/runners.js";
+import { puzzles1 } from "./packs/puzzles1.js";
+import { puzzles2 } from "./packs/puzzles2.js";
+import { board } from "./packs/board.js";
+import { luck } from "./packs/luck.js";
+import { reflex } from "./packs/reflex.js";
+import { skill } from "./packs/skill.js";
 
 export const GAMES = [
   snake,
@@ -30,6 +40,16 @@ export const GAMES = [
   simon,
   whack,
   reaction,
+  ...shooters,
+  ...racing,
+  ...bricks,
+  ...runners,
+  ...puzzles1,
+  ...puzzles2,
+  ...board,
+  ...luck,
+  ...reflex,
+  ...skill,
 ];
 
-export const CATEGORY_ORDER = ["Arcade", "Puzzle", "Board", "Reflex"];
+export const CATEGORY_ORDER = ["Arcade", "Shooter", "Racing", "Puzzle", "Word", "Board", "Luck", "Reflex", "Skill"];

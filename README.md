@@ -1,10 +1,11 @@
 # Sidebar Arcade 👾
 
-**15 game mini di Chrome Side Panel.** Klik ikon extension, panel samping terbuka, pilih game, langsung main. Tanpa akun, tanpa iklan, tanpa koneksi internet.
+**115 game mini di Chrome Side Panel.** Klik ikon extension, panel samping terbuka, pilih game, langsung main. Tanpa akun, tanpa iklan, tanpa koneksi internet.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-4ee1ff.svg)](LICENSE)
 [![Chrome](https://img.shields.io/badge/Chrome-116%2B-a78bfa.svg)](https://developer.chrome.com/docs/extensions/reference/api/sidePanel)
 [![Vanilla JS](https://img.shields.io/badge/vanilla-JS%20%2B%20Canvas-fbbf24.svg)](#struktur-project)
+[![Games](https://img.shields.io/badge/games-115-4ade80.svg)](#daftar-game)
 
 ![Sidebar Arcade](docs/preview-arcade.png)
 
@@ -14,39 +15,88 @@ Dibuat buat nemenin nungguin agent kerja (atau deploy, atau build, atau apapun).
 
 ## Kenapa dibuat
 
-Nunggu proses panjang itu membosankan. Daripada buka tab game yang penuh iklan, mending satu panel kecil di samping: 15 game, jalan offline, skor tersimpan lokal, dan nggak perlu pindah tab.
+Nunggu proses panjang itu membosankan. Daripada buka tab game yang penuh iklan, mending satu panel kecil di samping: 115 game, jalan offline, skor tersimpan lokal, dan nggak perlu pindah tab.
 
 ## Fitur
 
 - **Side panel, bukan popup** — panel tetap terbuka sambil kamu kerja di tab lain.
-- **Tab game vertikal** di sidebar, dikelompokkan: Arcade, Puzzle, Board, Reflex.
-- **Semua game langsung bisa dipilih** — nggak ada halaman loading, nggak ada redirect.
+- **Tab game vertikal** di sidebar, dikelompokkan: Arcade, Shooter, Racing, Puzzle, Word, Board, Luck, Reflex, Skill.
+- **115 game langsung bisa dipilih** — nggak ada halaman loading, nggak ada redirect.
+- **Ada pesawat-pesawatan**: Space Ace, Sky Fighter, Galaxy Run, Asteroid Storm, Boss Rush, Drone Swarm, UFO Invasion, Neon Shooter, Helicopter Strike, Air Patrol, Missile Command, Space Fortress, Plane Dodger, Jetpack Run, Cave Flyer, Helicopter Cave.
+- **Dingdong & kartu**: Slot Machine, Fruit Slot, Lucky Seven, Roulette, Plinko, Spin Wheel, Keno, Scratch Card, Bingo, Blackjack, Video Poker, Yahtzee, Farkle.
 - **Skor terbaik disimpan** per game (`chrome.storage.local`), ada juga trophy kecil di tab.
 - **Suara 8-bit** (bisa dimatikan), toggle tersimpan.
-- **Keyboard + sentuh** — panah/WASD, tap, swipe, dan tombol pad di bawah canvas.
+- **Keyboard + sentuh** — panah/WASD, tap, swipe, drag, dan tombol pad di bawah canvas.
 - **Pencarian game** + tombol 🎲 Acak.
 - **100% offline**, nol request jaringan, nol tracking.
 - **Vanilla JS** tanpa build step. Clone → load unpacked → jalan.
 
 ## Daftar game
 
-| # | Game | Kategori | Kontrol |
-|---|------|----------|---------|
-| 1 | 🐍 Snake | Arcade | Panah / WASD / swipe |
-| 2 | 🧱 Tetris | Arcade | ← → · ↑ putar · spasi drop |
-| 3 | 🧨 Breakout | Arcade | Panah / sentuh paddle |
-| 4 | 🐤 Flappy | Arcade | Klik / spasi / tap |
-| 5 | 👾 Invaders | Arcade | ← → · spasi tembak |
-| 6 | 🏎️ Neon Racer | Arcade | ← → pindah lajur |
-| 7 | 🏓 Pong | Arcade | Panah / sentuh paddle |
-| 8 | 🔢 2048 | Puzzle | Panah / WASD / swipe |
-| 9 | 🧠 Memory Match | Puzzle | Klik kartu |
-| 10 | 💣 Minesweeper | Puzzle | Klik · klik kanan/tahan = 🚩 |
-| 11 | ⭕ Tic Tac Toe | Board | Klik kotak (AI minimax) |
-| 12 | 🔴 Connect 4 | Board | Klik kolom (AI minimax) |
-| 13 | 🎛️ Simon | Reflex | Klik pad sesuai urutan |
-| 14 | 🔨 Whack-a-Mole | Reflex | Klik tikus (30 detik) |
-| 15 | ⚡ Reaction | Reflex | Klik saat hijau (skor = ms) |
+### Arcade, Shooter & Racing (40)
+
+| Game | Kontrol |
+|------|---------|
+| 🐍 Snake | Panah / WASD / swipe |
+| 🧱 Tetris | ← → · ↑ putar · spasi drop |
+| 🧨 Breakout | Panah / sentuh paddle |
+| 🐤 Flappy | Klik / spasi / tap |
+| 👾 Invaders | ← → · spasi tembak |
+| 🏎️ Neon Racer | ← → pindah lajur |
+| 🏓 Pong | Panah / sentuh paddle |
+| 🚀 Space Ace | Gerak + auto-tembak |
+| ✈️ Sky Fighter | Panah / WASD · tembak |
+| 🌌 Galaxy Run | Gerak + tembak |
+| ☄️ Asteroid Storm | Putar + tembak batu |
+| 👹 Boss Rush | Dodge + tembak boss |
+| 🛸 Drone Swarm | Tembak drone |
+| 👽 UFO Invasion | Tembak UFO |
+| 🔫 Neon Shooter | Panah + tembak |
+| 🚁 Helicopter Strike | Terbang + bombardir |
+| 🛩️ Air Patrol | Pesawat patroli |
+| 🚀 Missile Command | Tap kota yang diserang |
+| 🛰️ Space Fortress | Bertahan dari gelombang |
+| 🛣️ Highway Racer | ← → pindah lajur |
+| 🏍️ Bike Lane | Dodge kendaraan |
+| 🚂 Train Dodge | Hindari kereta |
+| ✈️ Plane Dodger | Hindari pesawat lain |
+| 🌃 Night Drive | Nyetir malam |
+| 🚚 Truck Traffic | Salip truk |
+| 🚤 Boat Rapids | Arungi jeram |
+| 🏜️ Desert Rally | Rally gurun |
+| 🛸 Hover Racer | Balap hover |
+| 🚇 Tunnel Dash | Dodge terowongan |
+| 💣 Brick Blitz | Panah + bola |
+| 🧱 Brick Wall | Hancurkan dinding |
+| 🌈 Neon Bricks | Breakout neon |
+| 🌧️ Brick Rain | Bata jatuh |
+| 💥 Bomb Bricks | Bata + bom |
+| 🏃 Nitro Runner | Lompat + slide |
+| 🦖 Dino Run | Lompat rintangan |
+| 🏃 Parkour Dash | Lompat + slide |
+| 🚀 Jetpack Run | Tahan untuk terbang |
+| 🦇 Cave Flyer | Terbang di gua |
+| 🚁 Helicopter Cave | Terbang di lorong |
+
+### Puzzle & Word (25)
+
+2048, Memory Match, Minesweeper, Sudoku, Sudoku Mini, Fifteen Puzzle, Lights Out, Sokoban, Nonogram, Mastermind, Bulls & Cows, Wordle, Hangman, Anagram, Word Search, Number Merge, 2048 5×5, Pipe Connect, Color Sort, Maze Escape, Tower of Hanoi, Nim, Peg Solitaire, Gem Match, Rush Hour.
+
+### Board & Kartu (16)
+
+Tic Tac Toe, Connect 4, Checkers, Reversi, Gomoku, Dots & Boxes, Battleship, Blackjack, Video Poker, War, High-Low, Yahtzee, Farkle, Snakes & Ladders, Tic-Tac-4, Memory Deluxe.
+
+### Luck / Dingdong (11)
+
+Slot Machine, Fruit Slot, Lucky Seven, Roulette, Dice Over-Under, Plinko, Spin Wheel, Coin Flip, Keno, Scratch Card, Bingo.
+
+### Reflex (13)
+
+Simon, Whack-a-Mole, Reaction, Aim Trainer, Bubble Pop, Tap Frenzy, UFO Hunt, Mole Rush, Falling Catch, Precision Bar, Quick Draw, Beat Tap, Balance Ball.
+
+### Skill / Olahraga (10)
+
+Basketball, Mini Golf, Darts, Archery, Air Hockey, Bowling, Cannon Shot, Stack Tower, Fruit Slice, Pinball Lite.
 
 <table>
   <tr>
@@ -97,17 +147,36 @@ sidebar-arcade/
     ├── styles.css         # desain panel sempit
     ├── lib/
     │   ├── kit.js         # helper DOM, stage canvas, input, sfx, best score
-    │   └── store.js       # chrome.storage.local + fallback localStorage
-    └── games/
-        ├── snake.js  tetris.js  2048.js  breakout.js
-        ├── flappy.js invaders.js dodge.js pong.js
-        ├── memory.js mines.js   tictactoe.js connect4.js
-        └── simon.js  whack.js   reaction.js
+    │   ├── store.js       # chrome.storage.local + fallback localStorage
+    │   └── engines/       # mesin bersama
+    │       ├── shmup.js   # shooter vertikal
+    │       ├── laner.js   # game 3–4 lajur
+    │       ├── bricks.js  # breakout/brick
+    │       ├── runner.js  # endless runner
+    │       ├── aim.js     # tap target
+    │       └── casino.js  # shell & bet row untuk game taruhan
+    ├── games/             # 15 game original
+    │   ├── snake.js  tetris.js  2048.js  breakout.js
+    │   ├── flappy.js invaders.js dodge.js pong.js
+    │   ├── memory.js mines.js   tictactoe.js connect4.js
+    │   └── simon.js  whack.js   reaction.js
+    └── packs/             # 100 game tambahan (data + mount)
+        ├── _shared.js     # helper papan/kartu/dadu
+        ├── shooters.js    # 12 game pesawat & shooter
+        ├── racing.js      # 10 game balap/lari
+        ├── bricks.js      # 6 game brick
+        ├── runners.js     # 6 game runner
+        ├── puzzles1.js    # puzzle & word
+        ├── puzzles2.js    # puzzle logika
+        ├── board.js       # board, kartu, dadu
+        ├── luck.js        # dingdong / slot / roda
+        ├── reflex.js      # refleks & aim
+        └── skill.js       # olahraga & skill
 ```
 
 ## Menambah game baru
 
-Setiap game adalah satu file ES module dengan kontrak sederhana:
+Setiap game adalah satu entri dengan kontrak sederhana. Bisa ditaruh di `src/games/*.js` (satu file) atau sebagai entri di `src/packs/*.js`:
 
 ```js
 import { createStage, COLORS, sfx } from "../lib/kit.js";
@@ -116,7 +185,7 @@ export default {
   id: "gameku",           // unik, dipakai untuk simpan skor
   name: "Game Ku",        // label di tab (pendek, ~10 karakter)
   emoji: "🕹️",
-  tag: "Arcade",          // Arcade | Puzzle | Board | Reflex
+  tag: "Arcade",          // Arcade | Shooter | Racing | Puzzle | Word | Board | Luck | Reflex | Skill
   desc: "Deskripsi singkat.",
   bestMode: "max",        // "max" atau "min" (mis. reaction time)
 
@@ -145,11 +214,11 @@ export default {
 Lalu daftarkan di `src/registry.js`:
 
 ```js
-import gameku from "./games/gameku.js";
+import { gameku } from "./packs/gameku.js";
 export const GAMES = [/* ... */, gameku];
 ```
 
-Untuk game berbasis DOM (kartu/papan) pakai `createScreen` — lihat `games/memory.js` atau `games/mines.js` sebagai contoh. `ctx.report(score)` dipanggil sekali saat ronde selesai untuk menyimpan rekor.
+Untuk game berbasis DOM (kartu/papan/slot) pakai `createScreen` — lihat `src/games/memory.js` atau `src/packs/board.js`. `ctx.report(score)` dipanggil sekali saat ronde selesai untuk menyimpan rekor.
 
 ## Privasi
 
@@ -163,7 +232,7 @@ Permission yang diminta:
 
 PR game baru sangat welcome. Aturan mainnya cuma:
 
-1. Satu game = satu file di `src/games/`, daftarkan di `registry.js`.
+1. Satu game = satu entri dengan `id` unik, daftarkan di `registry.js`.
 2. Tanpa dependency eksternal, tanpa request jaringan, tanpa `innerHTML` dari input user.
 3. Harus enak dimainkan di lebar 320 px dan bisa pakai keyboard **dan** sentuh.
 4. Ikuti gaya kode yang ada (vanilla JS, ES modules, komentar seperlunya).

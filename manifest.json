@@ -1,11 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Sidebar Arcade — 15 Game",
+  "name": "Sidebar Arcade — 115 Game",
   "short_name": "Sidebar Arcade",
-  "version": "1.0.0",
-  "description": "15 game mini yang bisa langsung dimainkan di Chrome Side Panel. Ringan, offline, tanpa iklan.",
+  "version": "2.0.0",
+  "description": "115 game mini (arcade, shooter, pesawat, racing, puzzle, kartu, dingdong/slot, refleks, olahraga) yang langsung dimainkan di Chrome Side Panel. Ringan, offline, tanpa iklan.",
   "minimum_chrome_version": "116",
-  "permissions": ["sidePanel", "storage"],
+  "permissions": [
+    "sidePanel",
+    "storage"
+  ],
   "action": {
     "default_title": "Buka Sidebar Arcade",
     "default_icon": {
